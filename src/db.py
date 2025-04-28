@@ -33,6 +33,17 @@ class DB:
             )
             return [dict(row) for row in res.fetchall()]
 
+    def delete_task(self, data):
+        con = sqlite3.connect(self.db)
+        with con:
+            con.execute(
+                """
+                delete from tasks where id = :id;
+                """,
+                data
+            )
+        return
+
     def create_tasks(self, data):
         con = sqlite3.connect(self.db)
         with con:
@@ -61,4 +72,18 @@ class DB:
             )
         return
 
-
+    def update_task_description(self, id, description):
+        con = sqlite3.connect(self.db)
+        with con:
+            con.execute(
+                """
+                update tasks
+                set description = :description 
+                where id = :id;
+                """,
+                {
+                    'id': id,
+                    'description': description
+                }
+            )
+        return

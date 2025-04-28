@@ -13,25 +13,50 @@ def get_tasks():
     res = jsonify(tasks)
     return res
 
-@app.route("/tasks", methods=["POST"])
+@app.route("/create-task", methods=["POST"])
 def create_task():
-    db.create_tasks(request.get_json())
-    return "", 204
+    try:
+        print(request.get_json())
+        db.create_tasks(request.get_json())
+        return jsonify({
+            'status': 204
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 500,
+            'error': e
+        })
+
+@app.route("/delete-task/<int:task_id>", methods=["DELETE"])
+def delete_task(task_id):
+    try:
+        db.delete_task({
+            'id': task_id
+        }
+        )
+        return jsonify({
+            'status': 204
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 500,
+            'error': e
+        })
 
 @app.route("/change/id", methods=["PATCH"])
-def change_task_id(id):
+def change_task_id(old_id, new_id):
     pass
 
-@app.route("/change/casenum", methods=["PATCH"])
-def change_task_casenum(id):
-    pass
+@app.route("/change/casenum/<int:task_id>/<int:case_num>", methods=["PATCH"])
+def change_task_casenum(id, new_casenum):
+    return db.update_task_case_number(id, new_casenum)
 
 @app.route("/change/description", methods=["PATCH"])
-def change_task_desc(id):
+def change_task_desc(id, new_description):
     pass
 
 @app.route("/change/status", methods=["PATCH"])
-def change_task_status():
+def change_task_status(id):
     pass
 
 if __name__ == '__main__':
